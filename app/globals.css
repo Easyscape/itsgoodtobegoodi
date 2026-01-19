@@ -1,0 +1,131 @@
+@import 'tailwindcss';
+
+/* Design tokens pour It's Good To Be Goody */
+@theme {
+  /* Couleurs principales - Chaleureux naturel */
+  --color-terracotta-50: #fdf8f6;
+  --color-terracotta-100: #f9ede8;
+  --color-terracotta-200: #f3dcd2;
+  --color-terracotta-300: #e9c4b3;
+  --color-terracotta-400: #dba58d;
+  --color-terracotta-500: #C4A484;
+  --color-terracotta-600: #a87d5c;
+  --color-terracotta-700: #8c6548;
+  --color-terracotta-800: #74533d;
+  --color-terracotta-900: #614636;
+
+  --color-beige-50: #fdfcfa;
+  --color-beige-100: #F5F0E8;
+  --color-beige-200: #EDE4D3;
+  --color-beige-300: #e2d5be;
+  --color-beige-400: #d4c2a3;
+  --color-beige-500: #c4ac86;
+
+  --color-sage-300: #adbba5;
+  --color-sage-400: #9CAF88;
+  --color-sage-500: #768b64;
+  --color-sage-600: #5d704e;
+
+  --color-brown-500: #9d806f;
+  --color-brown-600: #8f6f5e;
+  --color-brown-700: #775b4e;
+  --color-brown-800: #634c43;
+  --color-brown-900: #3D3229;
+
+  /* Fonts */
+  --font-serif: 'Playfair Display', Georgia, serif;
+  --font-sans: 'Inter', system-ui, sans-serif;
+}
+
+/* Reset et base */
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: var(--font-sans);
+  background-color: var(--color-beige-50);
+  color: var(--color-brown-900);
+  line-height: 1.6;
+}
+
+/* Headings avec police serif */
+h1, h2, h3, h4 {
+  font-family: var(--font-serif);
+  font-weight: 700;
+  line-height: 1.2;
+}
+
+/* Links */
+a {
+  color: var(--color-terracotta-600);
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+
+a:hover {
+  color: var(--color-terracotta-700);
+}
+
+/* Selection */
+::selection {
+  background-color: var(--color-terracotta-200);
+  color: var(--color-brown-900);
+}
+
+/* Scrollbar custom */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--color-beige-100);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--color-terracotta-300);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--color-terracotta-400);
+}
+
+/* Prose pour les articles */
+.prose {
+  --tw-prose-body: var(--color-brown-900);
+  --tw-prose-headings: var(--color-brown-900);
+  --tw-prose-links: var(--color-terracotta-600);
+  --tw-prose-bold: var(--color-brown-900);
+  --tw-prose-quotes: var(--color-brown-700);
+  --tw-prose-quote-borders: var(--color-terracotta-400);
+}
+
+.prose h1,
+.prose h2,
+.prose h3,
+.prose h4 {
+  font-family: var(--font-serif);
+}
+
+/* Animations */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.animate-fade-in {
+  animation: fadeIn 0.5s ease-out forwards;
+}
+
+/* Focus visible */
+:focus-visible {
+  outline: 2px solid var(--color-terracotta-500);
+  outline-offset: 2px;
+}
