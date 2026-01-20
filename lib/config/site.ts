@@ -1,10 +1,10 @@
 export const siteConfig = {
-  name: "It's Good To Be Goody",
+  name: "It's Good To Be Goodi",
   description: 'Blog voyage en famille - Conseils, itinéraires et aventures',
-  url: 'https://itsgoodtobegoody.com',
+  url: 'https://itsgoodtobegoodi.com',
   author: 'Laure',
-  email: 'contact@itsgoodtobegoody.com',
-  instagram: 'itsgoodtobegoody',
+  email: 'contact@itsgoodtobegoodi.com',
+  instagram: 'itsgoodtobegoodi',
 
   nav: [
     { label: 'Accueil', href: '/' },
