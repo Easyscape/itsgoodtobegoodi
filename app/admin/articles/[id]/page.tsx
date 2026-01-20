@@ -1,9 +1,9 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { useRouter } from 'next/navigation'
+import { useRouter, useParams } from 'next/navigation'
 import Link from 'next/link'
-import { ArrowLeft, Save, Loader2 } from 'lucide-react'
+import { ArrowLeft, Save, Loader2, Trash2 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { TiptapEditor } from '@/components/editor/tiptap-editor'
 import { createClient } from '@/lib/supabase/client'
@@ -15,20 +15,70 @@ type Category = {
   emoji: string | null
 }
 
-export default function NewArticlePage() {
+type Article = {
+  id: string
+  title: string
+  slug: string
+  excerpt: string | null
+  content: string | null
+  cover_image: string | null
+  status: string
+}
+
+export default function EditArticlePage() {
   const router = useRouter()
+  const params = useParams()
+  const articleId = params.id as string
+
+  const [loading, setLoading] = useState(true)
   const [title, setTitle] = useState('')
   const [excerpt, setExcerpt] = useState('')
   const [content, setContent] = useState('')
   const [coverImage, setCoverImage] = useState('')
+  const [status, setStatus] = useState<'draft' | 'published'>('draft')
   const [categories, setCategories] = useState<Category[]>([])
   const [selectedCategories, setSelectedCategories] = useState<string[]>([])
   const [isSaving, setIsSaving] = useState(false)
   const [saveType, setSaveType] = useState<'draft' | 'published'>('draft')
 
   useEffect(() => {
+    fetchArticle()
     fetchCategories()
-  }, [])
+  }, [articleId])
+
+  const fetchArticle = async () => {
+    const supabase = createClient()
+
+    const { data: article, error } = await supabase
+      .from('articles')
+      .select('*')
+      .eq('id', articleId)
+      .single()
+
+    if (error || !article) {
+      alert('Article non trouvé')
+      router.push('/admin/articles')
+      return
+    }
+
+    setTitle(article.title || '')
+    setExcerpt(article.excerpt || '')
+    setContent(article.content || '')
+    setCoverImage(article.cover_image || '')
+    setStatus(article.status as 'draft' | 'published')
+
+    // Fetch article categories
+    const { data: articleCats } = await supabase
+      .from('article_categories')
+      .select('category_id')
+      .eq('article_id', articleId)
+
+    if (articleCats) {
+      setSelectedCategories(articleCats.map(c => c.category_id))
+    }
+
+    setLoading(false)
+  }
 
   const fetchCategories = async () => {
     const supabase = createClient()
@@ -68,31 +118,24 @@ export default function NewArticlePage() {
 
     const supabase = createClient()
 
-    // Get current user
-    const { data: { user } } = await supabase.auth.getUser()
-    if (!user) {
-      alert('Vous devez être connecté')
-      setIsSaving(false)
-      return
-    }
-
     const slug = generateSlug(title)
 
-    // Create article
-    const { data: article, error } = await supabase
+    // Update article
+    const { error } = await supabase
       .from('articles')
-      .insert({
+      .update({
         title,
         slug,
         excerpt: excerpt || null,
         content,
         cover_image: coverImage || null,
         status: publishStatus,
-        author_id: user.id,
-        published_at: publishStatus === 'published' ? new Date().toISOString() : null,
+        published_at: publishStatus === 'published' && status !== 'published'
+          ? new Date().toISOString()
+          : undefined,
+        updated_at: new Date().toISOString(),
       })
-      .select()
-      .single()
+      .eq('id', articleId)
 
     if (error) {
       console.error('Erreur:', error)
@@ -101,17 +144,32 @@ export default function NewArticlePage() {
       return
     }
 
-    // Add categories
-    if (selectedCategories.length > 0 && article) {
+    // Update categories: delete all and re-insert
+    await supabase
+      .from('article_categories')
+      .delete()
+      .eq('article_id', articleId)
+
+    if (selectedCategories.length > 0) {
       await supabase.from('article_categories').insert(
         selectedCategories.map(catId => ({
-          article_id: article.id,
+          article_id: articleId,
           category_id: catId,
         }))
       )
     }
 
-    router.push('/admin/articles')
+    setStatus(publishStatus)
+    setIsSaving(false)
+    alert(publishStatus === 'published' ? 'Article publié !' : 'Modifications enregistrées !')
+  }
+
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center h-64">
+        <Loader2 className="h-8 w-8 animate-spin text-terracotta-500" />
+      </div>
+    )
   }
 
   return (
@@ -127,10 +185,16 @@ export default function NewArticlePage() {
           </Link>
           <div>
             <h1 className="font-serif text-2xl font-bold text-brown-900">
-              Nouvel article
+              Modifier l&apos;article
             </h1>
-            <p className="text-brown-600 text-sm">
-              Créez un nouvel article pour votre blog
+            <p className="text-brown-600 text-sm flex items-center gap-2">
+              <span className={`inline-flex px-2 py-0.5 rounded-full text-xs font-medium ${
+                status === 'published'
+                  ? 'bg-sage-100 text-sage-700'
+                  : 'bg-beige-200 text-brown-600'
+              }`}>
+                {status === 'published' ? 'Publié' : 'Brouillon'}
+              </span>
             </p>
           </div>
         </div>
@@ -154,7 +218,7 @@ export default function NewArticlePage() {
             {isSaving && saveType === 'published' ? (
               <Loader2 className="h-4 w-4 animate-spin" />
             ) : null}
-            Publier
+            {status === 'published' ? 'Mettre à jour' : 'Publier'}
           </Button>
         </div>
       </div>
