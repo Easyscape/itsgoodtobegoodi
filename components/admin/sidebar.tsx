@@ -21,12 +21,8 @@ import {
 const navigation = [
   { name: 'Dashboard', href: '/admin', icon: LayoutDashboard },
   { name: 'Articles', href: '/admin/articles', icon: FileText },
-  { name: 'Voyages', href: '/admin/voyages', icon: Map },
-  { name: 'Catégories', href: '/admin/categories', icon: FolderOpen },
-  { name: 'Médias', href: '/admin/medias', icon: Image },
   { name: 'Ressources', href: '/admin/ressources', icon: Download },
   { name: 'Commentaires', href: '/admin/commentaires', icon: MessageSquare },
-  { name: 'Newsletter', href: '/admin/newsletter', icon: Mail },
 ]
 
 export function AdminSidebar() {
