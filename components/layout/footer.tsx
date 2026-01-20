@@ -122,6 +122,10 @@ export function Footer() {
             </p>
             <p className="flex items-center gap-1.5">
               Fait avec <Heart className="h-4 w-4 text-terracotta-400 fill-terracotta-400" /> par une famille de voyageurs
+              <span className="mx-2 text-brown-700">•</span>
+              <Link href="/connexion" className="text-brown-600 hover:text-terracotta-400 transition-colors">
+                Espace admin
+              </Link>
             </p>
           </div>
         </div>
