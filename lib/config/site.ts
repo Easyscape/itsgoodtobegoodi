@@ -9,10 +9,9 @@ export const siteConfig = {
   nav: [
     { label: 'Accueil', href: '/' },
     { label: 'Blog', href: '/blog' },
-    { label: 'Destinations', href: '/destinations' },
-    { label: 'Guides', href: '/guides' },
     { label: 'Ressources', href: '/ressources' },
     { label: 'À propos', href: '/a-propos' },
+    { label: 'Contact', href: '/contact' },
   ],
 
   footerNav: [
